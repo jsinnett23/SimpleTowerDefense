@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 8576138086864252790}
   - component: {fileID: 9039640587832941507}
   - component: {fileID: 7835571043087124496}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 7835571043087124496}
-  moveSpeed: 10
+  moveSpeed: 4
 --- !u!50 &7835571043087124496
 Rigidbody2D:
   serializedVersion: 4

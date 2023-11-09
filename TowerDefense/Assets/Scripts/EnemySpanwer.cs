@@ -20,6 +20,7 @@ public class EnemySpanwer : MonoBehaviour
 
     [Header("Events")]
     public static UnityEvent onEnemyDestroyed = new UnityEvent();
+    public static UnityEvent<GameObject> enemySpawn = new UnityEvent<GameObject>();
 
 
     private int currentWave = 1;
@@ -31,6 +32,7 @@ public class EnemySpanwer : MonoBehaviour
     private void Awake()
     {
         onEnemyDestroyed.AddListener(EnemyDestroyed);
+
     }
 
     // Start is called before the first frame update
@@ -86,8 +88,8 @@ public class EnemySpanwer : MonoBehaviour
     private void SpawnEnemy()
     {
         GameObject prefabToSpawn = enemyPrefabs[0];
-        Instantiate(prefabToSpawn,LevelManager.main.startPoint.position,Quaternion.identity);   
-
+        GameObject enemy = Instantiate(prefabToSpawn,LevelManager.main.startPoint.position,Quaternion.identity);   
+        enemySpawn.Invoke(enemy);
 
     }
 
