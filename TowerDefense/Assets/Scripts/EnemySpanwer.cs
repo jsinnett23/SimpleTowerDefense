@@ -21,6 +21,8 @@ public class EnemySpanwer : MonoBehaviour
     [Header("Events")]
     public static UnityEvent onEnemyDestroyed = new UnityEvent();
     public static UnityEvent<GameObject> enemySpawn = new UnityEvent<GameObject>();
+    public static UnityEvent<GameObject> enemyDestroyed = new UnityEvent<GameObject>();
+
 
 
     private int currentWave = 1;
@@ -41,6 +43,7 @@ public class EnemySpanwer : MonoBehaviour
         yield return new WaitForSeconds(timeBeforeWaves);
         isSpawning = true;
         enemiesLeftToSpawn = EnemiesPerWave();
+        currentWave++;  // Move to the next wave
     }
 
     private void Start()
@@ -96,5 +99,7 @@ public class EnemySpanwer : MonoBehaviour
     private void EnemyDestroyed()
     {
         enemiesAlive--;
+        enemyDestroyed.Invoke(gameObject);  // Assuming `gameObject` is the destroyed enemy
     }
+
 }

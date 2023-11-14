@@ -12,9 +12,16 @@ public class Turrets : MonoBehaviour
     [SerializeField] private LayerMask enemyMask;
     [SerializeField] private Transform exitPoint;
 
+    [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private Transform firePoint;
+
     [Header("Attribute")]
     [SerializeField] private float targetingRange = 5f;
     [SerializeField] List<GameObject> enemies = new List<GameObject>();
+    [SerializeField] private float fireRate = 1f; // Shots per second
+    private float fireTimer = 0f;
+
+
 
     private Transform target;
 
@@ -28,6 +35,7 @@ public class Turrets : MonoBehaviour
     void Start()
     {
         EnemySpanwer.enemySpawn.AddListener(addToList);
+        EnemySpanwer.enemyDestroyed.AddListener(removeFromList);  // New line
     }
 
     // Update is called once per frame
@@ -40,6 +48,14 @@ public class Turrets : MonoBehaviour
         }
 
         RotateTowardsTarget();
+
+        fireTimer += Time.deltaTime;
+
+        if (target != null && fireTimer >= 1f / fireRate)
+        {
+            Fire(target);
+            fireTimer = 0f;
+        }
     }
     private void RotateTowardsTarget()
     {
@@ -59,27 +75,38 @@ public class Turrets : MonoBehaviour
     }
     private void FindTarget()
     {
-        // Filter out all enemies that are out of range
-        var inRangeEnemies = enemies.Where(enemy => IsTargetInRange(enemy.transform)).ToList();
+        // Filter out null entries and enemies that are out of range
+        var inRangeEnemies = enemies.Where(enemy => enemy != null && IsTargetInRange(enemy.transform)).ToList();
 
-        // If there are no enemies in range, clear the target and return
         if (!inRangeEnemies.Any())
         {
             target = null;
             return;
         }
 
-        // Sort in-range enemies by distance to the exit point
         inRangeEnemies.Sort((a, b) =>
             Vector3.Distance(a.transform.position, exitPoint.position)
             .CompareTo(Vector3.Distance(b.transform.position, exitPoint.position))
         );
 
-        // The closest enemy to the exit that is within range becomes the new target
         target = inRangeEnemies[0].transform;
     }
     private bool IsTargetInRange(Transform target)
     {
         return Vector3.Distance(turretRotationPoint.position, target.position) <= targetingRange;
+    }
+    private void removeFromList(GameObject enemy)
+    {
+        enemies.Remove(enemy);
+    }
+    private void Fire(Transform enemyTarget)
+    {
+        GameObject projectileInstance = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+        Projectile projectileScript = projectileInstance.GetComponent<Projectile>();
+
+        if (projectileScript != null)
+        {
+            projectileScript.target = enemyTarget;
+        }
     }
 }

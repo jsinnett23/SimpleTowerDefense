@@ -10,6 +10,8 @@ public class EnemyMovement : MonoBehaviour{
 
     [Header ("Attributes")]
     [SerializeField] private float moveSpeed = 2f;
+    [SerializeField] private float health = 5; // Default health value
+
 
     private Transform target;
     private int pathIndex = 0;
@@ -41,6 +43,20 @@ public class EnemyMovement : MonoBehaviour{
 
             }
         }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+        if (health <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        Destroy(gameObject);
     }
 
     private void FixedUpdate()
