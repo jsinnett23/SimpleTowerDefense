@@ -19,13 +19,13 @@ public class EnemySpanwer : MonoBehaviour
     [SerializeField] private float difficultyScalingFactor = 0.75f;
 
     [Header("Events")]
-    public static UnityEvent onEnemyDestroyed = new UnityEvent();
+    public static UnityEvent<GameObject> onEnemyDestroyed = new UnityEvent<GameObject>();  // Corrected to match the listener's signature
     public static UnityEvent<GameObject> enemySpawn = new UnityEvent<GameObject>();
     public static UnityEvent<GameObject> enemyDestroyed = new UnityEvent<GameObject>();
 
 
 
-    private int currentWave = 1;
+    public static int currentWave = 1; // Make this public and static
     private float timeSinceLastSpawn;
     private int enemiesAlive;
     private int enemiesLeftToSpawn;
@@ -43,7 +43,8 @@ public class EnemySpanwer : MonoBehaviour
         yield return new WaitForSeconds(timeBeforeWaves);
         isSpawning = true;
         enemiesLeftToSpawn = EnemiesPerWave();
-        currentWave++;  // Move to the next wave
+        Debug.Log("Starting Wave: " + currentWave + " with " + enemiesLeftToSpawn + " enemies to spawn"); // Debug log for start of wave
+
     }
 
     private void Start()
@@ -71,9 +72,11 @@ public class EnemySpanwer : MonoBehaviour
             enemiesLeftToSpawn--;
             enemiesAlive++;
             timeSinceLastSpawn = 0f;
+            Debug.Log("Spawned Enemy. Enemies Left to Spawn: " + enemiesLeftToSpawn + ", Enemies Alive: " + enemiesAlive); // Debug log for enemy spawn
+
         }
 
-        if(enemiesAlive == 0 &&  enemiesLeftToSpawn == 0)
+        if (enemiesAlive == 0 &&  enemiesLeftToSpawn == 0)
         {
             EndWave();
         }
@@ -85,6 +88,11 @@ public class EnemySpanwer : MonoBehaviour
         timeSinceLastSpawn = 0f;
         StartCoroutine(StartWave());
         currentWave++;
+        LevelManager.main.UpdateUI(); // Update UI with new wave number
+
+
+        Debug.Log("Ended Wave: " + (currentWave - 1)); // Debug log for end of wave
+
 
     }
 
@@ -96,10 +104,20 @@ public class EnemySpanwer : MonoBehaviour
 
     }
 
-    private void EnemyDestroyed()
+    private void EnemyDestroyed(GameObject destroyedEnemy)
     {
         enemiesAlive--;
-        enemyDestroyed.Invoke(gameObject);  // Assuming `gameObject` is the destroyed enemy
+        Debug.Log("Enemy Destroyed. Enemies Alive: " + enemiesAlive);
+
+        if (enemiesAlive < 0)
+        {
+            Debug.LogError("Enemies Alive went negative! This shouldn't happen.");
+        }
+
+        if (enemiesAlive == 0 && enemiesLeftToSpawn == 0 && isSpawning)
+        {
+            EndWave();
+        }
     }
 
 }

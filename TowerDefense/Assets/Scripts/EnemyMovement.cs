@@ -27,26 +27,30 @@ public class EnemyMovement : MonoBehaviour{
     // Update is called once per frame
     void Update()
     {
-        if(Vector2.Distance(target.position,transform.position) <= 0.1f)
+        if (Vector2.Distance(target.position, transform.position) <= 0.1f)
         {
             pathIndex++;
 
-            if(pathIndex == LevelManager.main.path.Length)
+            if (pathIndex == LevelManager.main.path.Length)
             {
-                EnemySpanwer.onEnemyDestroyed.Invoke();
+                LevelManager.main.EnemyReachedBase(); // Notify that an enemy reached the base
+                EnemySpanwer.onEnemyDestroyed.Invoke(this.gameObject); // Notify that an enemy is "destroyed"
                 Destroy(gameObject);
                 return;
             }
             else
             {
                 target = LevelManager.main.path[pathIndex];
-
             }
         }
     }
 
+    private bool isDead = false;
+
     public void TakeDamage(int damage)
     {
+        if (isDead) return; // Prevent multiple calls if already dead
+
         health -= damage;
         if (health <= 0)
         {
@@ -56,7 +60,12 @@ public class EnemyMovement : MonoBehaviour{
 
     private void Die()
     {
-        Destroy(gameObject);
+        if (isDead) return; // Prevent multiple calls
+
+        isDead = true;
+        LevelManager.main.EnemyDestroyed(); // Notify LevelManager that an enemy has been destroyed
+        EnemySpanwer.onEnemyDestroyed.Invoke(this.gameObject);
+        Destroy(gameObject); // Destroy the enemy
     }
 
     private void FixedUpdate()

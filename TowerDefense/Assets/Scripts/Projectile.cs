@@ -7,9 +7,18 @@ public class Projectile : MonoBehaviour
 {
     [SerializeField] private float speed = 5f;
     [SerializeField] private float damage = 10f; // Damage the projectile deals
+    [SerializeField] private float lifespan = 2f; // Duration before the projectile is destroyed
+
+
     public Transform target;  // Ensure this line is present
     private Vector2 direction;
+    private float timer;
 
+    public void Initialize(Vector2 initialDirection)
+    {
+        direction = initialDirection;
+        timer = lifespan;
+    }
 
     void Start()
     {
@@ -21,20 +30,28 @@ public class Projectile : MonoBehaviour
     }
     void Update()
     {
-        if (target != null)
-        {
-            Vector2 direction = (target.position - transform.position).normalized;
-            transform.Translate(direction * speed * Time.deltaTime);
-        }
+        // Move the projectile in the set direction
+        transform.Translate(direction * speed * Time.deltaTime);
 
+        // Destroy the projectile after its lifespan is over
+        timer -= Time.deltaTime;
+        if (timer <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
+
+    private bool hasCollided = false;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (hasCollided) return; // Prevent multiple triggers
+
         if (collision.gameObject.CompareTag("Enemy"))
         {
+            hasCollided = true;
             collision.gameObject.GetComponent<EnemyMovement>()?.TakeDamage(1);
-            Destroy(gameObject);
+            Destroy(gameObject); // Destroy the projectile immediately to prevent multiple collisions
         }
     }
 }

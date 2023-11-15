@@ -99,14 +99,16 @@ public class Turrets : MonoBehaviour
     {
         enemies.Remove(enemy);
     }
+
     private void Fire(Transform enemyTarget)
     {
         GameObject projectileInstance = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
         Projectile projectileScript = projectileInstance.GetComponent<Projectile>();
 
-        if (projectileScript != null)
+        if (projectileScript != null && enemyTarget != null)
         {
-            projectileScript.target = enemyTarget;
+            Vector2 fireDirection = (enemyTarget.position - firePoint.position).normalized;
+            projectileScript.Initialize(fireDirection);
         }
     }
 }
