@@ -140,7 +140,7 @@ MonoBehaviour:
   firePoint: {fileID: 3936796731583757481}
   targetingRange: 5
   enemies: []
-  fireRate: 10
+  fireRate: 2
 --- !u!1 &2987598402404620798
 GameObject:
   m_ObjectHideFlags: 0
