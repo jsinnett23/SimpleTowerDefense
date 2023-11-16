@@ -43,7 +43,6 @@ public class EnemySpanwer : MonoBehaviour
         yield return new WaitForSeconds(timeBeforeWaves);
         isSpawning = true;
         enemiesLeftToSpawn = EnemiesPerWave();
-        Debug.Log("Starting Wave: " + currentWave + " with " + enemiesLeftToSpawn + " enemies to spawn"); // Debug log for start of wave
 
     }
 
@@ -72,7 +71,6 @@ public class EnemySpanwer : MonoBehaviour
             enemiesLeftToSpawn--;
             enemiesAlive++;
             timeSinceLastSpawn = 0f;
-            Debug.Log("Spawned Enemy. Enemies Left to Spawn: " + enemiesLeftToSpawn + ", Enemies Alive: " + enemiesAlive); // Debug log for enemy spawn
 
         }
 

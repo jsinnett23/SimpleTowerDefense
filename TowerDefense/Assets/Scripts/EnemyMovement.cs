@@ -5,16 +5,23 @@ using UnityEngine;
 public class EnemyMovement : MonoBehaviour{
     // Start is called before the first frame update
 
-    [Header("Refrences")]
+    [Header("Sprites")]
+    [SerializeField] private Sprite[] waveSprites; // Array to hold sprites for different waves
+
+    [Header("References")]
     [SerializeField] private Rigidbody2D rb;
 
-    [Header ("Attributes")]
-    [SerializeField] private float moveSpeed = 2f;
-    [SerializeField] private float health = 5; // Default health value
+    [Header("Base Attributes")]
+    [SerializeField] private float baseMoveSpeed = 2f;
+    [SerializeField] private float baseHealth = 5f;
 
+    private float moveSpeed;
+    private float health;
 
     private Transform target;
     private int pathIndex = 0;
+
+    private SpriteRenderer spriteRenderer;
 
 
 
@@ -22,6 +29,20 @@ public class EnemyMovement : MonoBehaviour{
     void Start()
     {
         target = LevelManager.main.path[pathIndex];
+        ScaleAttributes(EnemySpanwer.currentWave);
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null)
+        {
+            return;
+        }
+
+        // Call method to set the appropriate sprite for the current wave
+        SetSpriteForWave(EnemySpanwer.currentWave);
+
+        // Scale attributes based on the current wave
+        ScaleAttributes(EnemySpanwer.currentWave);
+
+
     }
 
     // Update is called once per frame
@@ -66,6 +87,29 @@ public class EnemyMovement : MonoBehaviour{
         LevelManager.main.EnemyDestroyed(); // Notify LevelManager that an enemy has been destroyed
         EnemySpanwer.onEnemyDestroyed.Invoke(this.gameObject);
         Destroy(gameObject); // Destroy the enemy
+    }
+    private void ScaleAttributes(int waveNumber)
+    {
+        // Increase these factors for more significant scaling per wave
+        float healthScalingFactor = 1.1f; // Increased from 1.1f
+        float speedScalingFactor = 1.05f; // Increased from 1.05f
+
+        health = baseHealth * Mathf.Pow(healthScalingFactor, waveNumber - 1);
+        moveSpeed = baseMoveSpeed * Mathf.Pow(speedScalingFactor, waveNumber - 1);
+    }
+    private void SetSpriteForWave(int waveNumber)
+    {
+        // Select sprite based on wave number
+        if (waveNumber >= 20 && waveSprites.Length > 4)
+            spriteRenderer.sprite = waveSprites[4];
+        else if (waveNumber >= 15 && waveSprites.Length > 3)
+            spriteRenderer.sprite = waveSprites[3];
+        else if (waveNumber >= 10 && waveSprites.Length > 2)
+            spriteRenderer.sprite = waveSprites[2];
+        else if (waveNumber >= 5 && waveSprites.Length > 1)
+            spriteRenderer.sprite = waveSprites[1];
+        else
+            spriteRenderer.sprite = waveSprites[0]; // Default sprite
     }
 
     private void FixedUpdate()

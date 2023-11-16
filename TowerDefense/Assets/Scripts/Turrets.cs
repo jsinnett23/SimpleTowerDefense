@@ -10,7 +10,8 @@ public class Turrets : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform turretRotationPoint;
     [SerializeField] private LayerMask enemyMask;
-    [SerializeField] private Transform exitPoint;
+    private Transform exitPoint;
+    [SerializeField] private AudioSource shootingAudioSource;
 
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private Transform firePoint;
@@ -20,10 +21,12 @@ public class Turrets : MonoBehaviour
     [SerializeField] List<GameObject> enemies = new List<GameObject>();
     [SerializeField] private float fireRate = 1f; // Shots per second
     private float fireTimer = 0f;
+    private bool hasCollided = false;
 
 
 
     private Transform target;
+
 
     private void OnDrawGizmosSelected()
     {
@@ -35,26 +38,41 @@ public class Turrets : MonoBehaviour
     void Start()
     {
         EnemySpanwer.enemySpawn.AddListener(addToList);
-        EnemySpanwer.enemyDestroyed.AddListener(removeFromList);  // New line
+        EnemySpanwer.enemyDestroyed.AddListener(removeFromList);
+
+        // Get the exitPoint from GameManager
+        if (GameManager.Instance != null)
+        {
+            exitPoint = GameManager.Instance.exitPoint;
+        }
+        else
+        {
+        }
     }
+
 
     // Update is called once per frame
     private void Update()
     {
-        // Check if the current target is out of range or null, then find a new target
         if (target == null || !IsTargetInRange(target))
         {
             FindTarget();
         }
 
-        RotateTowardsTarget();
-
-        fireTimer += Time.deltaTime;
-
-        if (target != null && fireTimer >= 1f / fireRate)
+        if (target != null)
         {
-            Fire(target);
-            fireTimer = 0f;
+            RotateTowardsTarget();
+
+            fireTimer += Time.deltaTime;
+
+            if (fireTimer >= 1f / fireRate)
+            {
+                Fire(target);
+                fireTimer = 0f;
+            }
+        }
+        else
+        {
         }
     }
     private void RotateTowardsTarget()
@@ -102,13 +120,37 @@ public class Turrets : MonoBehaviour
 
     private void Fire(Transform enemyTarget)
     {
+        if (enemyTarget == null)
+        {
+            Debug.Log("Fire called but no target.");
+            return;
+        }
+
+        // Instantiate the projectile at the firePoint's position
         GameObject projectileInstance = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+        Debug.Log("Projectile instantiated.");
+
         Projectile projectileScript = projectileInstance.GetComponent<Projectile>();
 
-        if (projectileScript != null && enemyTarget != null)
+        if (projectileScript != null)
         {
+            // Set the projectile's rotation to match the Z-axis rotation of the firePoint
+            float zRotation = firePoint.eulerAngles.z;
+            projectileInstance.transform.rotation = Quaternion.Euler(0, 0, zRotation);
+            Debug.Log("Projectile rotation set to: " + zRotation);
+
+            // Initialize the projectile
             Vector2 fireDirection = (enemyTarget.position - firePoint.position).normalized;
-            projectileScript.Initialize(fireDirection);
+            projectileScript.Initialize(fireDirection);  // Assuming your projectile script has an Initialize method
+            Debug.Log("Projectile initialized with direction: " + fireDirection);
+        }
+        if (shootingAudioSource != null)
+        {
+            shootingAudioSource.Play();
+        }
+        else
+        {
+            Debug.Log("Projectile script not found.");
         }
     }
 }

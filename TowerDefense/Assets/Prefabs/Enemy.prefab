@@ -29,8 +29,8 @@ Transform:
   m_GameObject: {fileID: 8437032680943530843}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.96, y: 6.48, z: 0}
-  m_LocalScale: {x: 0.84974, y: 0.84974, z: 0.84974}
+  m_LocalPosition: {x: -4.08, y: 6.56, z: 0}
+  m_LocalScale: {x: 1.8363409, y: 1.8363409, z: 1.8363409}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -76,12 +76,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.8679245, g: 0.15966538, b: 0.15966538, a: 1}
+  m_Sprite: {fileID: 2063557949, guid: 87194fa8d7550d64ba1450d2e50dd4f5, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.44, y: 0.44}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -99,9 +99,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0132ba9cbdbfc004290de81439154370, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  waveSprites:
+  - {fileID: 2063557949, guid: 87194fa8d7550d64ba1450d2e50dd4f5, type: 3}
+  - {fileID: 1200052060, guid: 87194fa8d7550d64ba1450d2e50dd4f5, type: 3}
+  - {fileID: -758304372, guid: 87194fa8d7550d64ba1450d2e50dd4f5, type: 3}
+  - {fileID: -624276451, guid: 87194fa8d7550d64ba1450d2e50dd4f5, type: 3}
+  - {fileID: -428162130, guid: 87194fa8d7550d64ba1450d2e50dd4f5, type: 3}
   rb: {fileID: 7835571043087124496}
-  moveSpeed: 4
-  health: 5
+  baseMoveSpeed: 2
+  baseHealth: 4
 --- !u!50 &7835571043087124496
 Rigidbody2D:
   serializedVersion: 4
@@ -163,4 +169,4 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.18

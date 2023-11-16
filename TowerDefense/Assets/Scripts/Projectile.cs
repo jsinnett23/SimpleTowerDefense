@@ -13,6 +13,7 @@ public class Projectile : MonoBehaviour
     public Transform target;  // Ensure this line is present
     private Vector2 direction;
     private float timer;
+    private bool isDead = false;
 
     public void Initialize(Vector2 initialDirection)
     {
@@ -22,6 +23,7 @@ public class Projectile : MonoBehaviour
 
     void Start()
     {
+
         if (target != null)
         {
             // Calculate direction towards the target
@@ -39,12 +41,14 @@ public class Projectile : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
     }
 
     private bool hasCollided = false;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+
         if (hasCollided) return; // Prevent multiple triggers
 
         if (collision.gameObject.CompareTag("Enemy"))
@@ -53,5 +57,14 @@ public class Projectile : MonoBehaviour
             collision.gameObject.GetComponent<EnemyMovement>()?.TakeDamage(1);
             Destroy(gameObject); // Destroy the projectile immediately to prevent multiple collisions
         }
+    }
+    public void SetInitialRotation(Transform turretGunTransform)
+    {
+        // Match the rotation of the projectile to the rotation of the turret's gun
+        this.transform.rotation = turretGunTransform.rotation;
+
+        // If needed, you can add an offset or additional rotation here
+        // For example, if the projectile's default orientation needs adjustment:
+        // this.transform.Rotate(0, 0, someAngleOffset);
     }
 }
