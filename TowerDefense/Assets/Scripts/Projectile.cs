@@ -61,8 +61,6 @@ public class Projectile : MonoBehaviour
         // Match the rotation of the projectile to the rotation of the turret's gun
         this.transform.rotation = turretGunTransform.rotation;
 
-        // If needed, you can add an offset or additional rotation here
-        // For example, if the projectile's default orientation needs adjustment:
-        // this.transform.Rotate(0, 0, someAngleOffset);
+        
     }
 }
