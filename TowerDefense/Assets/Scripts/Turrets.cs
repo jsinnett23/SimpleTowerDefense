@@ -21,18 +21,13 @@ public class Turrets : MonoBehaviour
     [SerializeField] List<GameObject> enemies = new List<GameObject>();
     [SerializeField] private float fireRate = 1f; // Shots per second
     private float fireTimer = 0f;
-    private bool hasCollided = false;
 
 
 
     private Transform target;
 
 
-    private void OnDrawGizmosSelected()
-    {
-        Handles.color = Color.cyan;
-        Handles.DrawWireDisc(turretRotationPoint.position, transform.forward, targetingRange);
-    }
+   
 
     // Start is called before the first frame update
     void Start()

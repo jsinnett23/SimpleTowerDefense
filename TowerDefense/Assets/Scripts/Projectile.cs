@@ -6,14 +6,12 @@ using static UnityEngine.GraphicsBuffer;
 public class Projectile : MonoBehaviour
 {
     [SerializeField] private float speed = 5f;
-    [SerializeField] private float damage = 10f; // Damage the projectile deals
     [SerializeField] private float lifespan = 2f; // Duration before the projectile is destroyed
 
 
     public Transform target;  // Ensure this line is present
     private Vector2 direction;
     private float timer;
-    private bool isDead = false;
 
     public void Initialize(Vector2 initialDirection)
     {
